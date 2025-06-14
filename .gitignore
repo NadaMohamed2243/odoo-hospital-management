@@ -1,0 +1,14 @@
+*.pyc
+*.pyo
+*.swp
+*.~ 
+__pycache__/
+*.log
+.idea/
+*.egg-info/
+*.db
+.env
+venv/
+.odoo/
+addons/.vscode/
+odoo/

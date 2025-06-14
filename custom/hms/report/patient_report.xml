@@ -1,0 +1,84 @@
+<odoo>
+    <template id="patient_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="patient">
+                    <div class="page" style="font-family: 'Arial', sans-serif; font-size: 14px; line-height: 1.6;">
+
+                        <!-- Title -->
+                        <h2 style="color: #d9534f; font-weight: bold; border-bottom: 2px solid #d9534f; padding-bottom: 5px; margin-bottom: 20px;">
+                            Patient Status Report
+                        </h2>
+
+                        <!-- Info Section -->
+                        <div style="display: flex; flex-direction: row; justify-content: space-between; gap: 20px; margin-bottom: 30px;">
+                            <!-- Left Column -->
+                            <div>
+                                <p><strong>Name:</strong> <span t-field="patient.first_name"/> <span t-field="patient.last_name"/></p>
+                                <p><strong>Age:</strong> <span t-field="patient.age"/></p>
+                                <p><strong>Department:</strong> <span t-field="patient.department_id.name"/></p>
+                                <p><strong>Doctors:</strong>
+                                    <t t-set="doctor_names" t-value="' , '.join(['%s %s' % (d.first_name, d.last_name) for d in patient.doctor_ids])"/>
+                                    <t t-esc="doctor_names"/>
+                                </p>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div>
+                                <div style="margin-bottom: 10px;">
+                                    <t t-if="patient.image">
+                                        <img t-att-src="image_data_uri(patient.image)" 
+                                             style="width: 150px; height: 150px; border-radius: 10px; object-fit: cover; border: 1px solid #ccc;" />
+                                    </t>
+                                    <t t-else="">
+                                        <div style="width: 150px; height: 150px; background-color: #f0f0f0; border-radius: 10px; 
+                                                    display: flex; align-items: center; justify-content: center; 
+                                                    color: #666; font-size: 12px; border: 1px solid #ccc;">
+                                            No Image
+                                        </div>
+                                    </t>
+                                </div>
+                                <p><strong>Birth date:</strong> <span t-field="patient.birth_date"/></p>
+                                <p><strong>PCR:</strong> <span t-field="patient.pcr"/></p>
+                                <p><strong>Blood Type:</strong> <span t-field="patient.blood_type"/></p>
+                                <p><strong>Email:</strong> <span t-field="patient.email"/></p>
+                            </div>
+                        </div>
+
+                        <!-- Log History Section -->
+                        <div>
+                            <h4 style="color: #d9534f; font-weight: bold; margin-bottom: 10px;">Log History</h4>
+                            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                                <thead>
+                                    <tr style="background-color: #337ab7; color: white;">
+                                        <th style="padding: 8px; border: 1px solid #ddd;">User</th>
+                                        <th style="padding: 8px; border: 1px solid #ddd;">Date</th>
+                                        <th style="padding: 8px; border: 1px solid #ddd;">Info</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="patient.log_ids" t-as="log">
+                                        <tr style="background-color: #f9f9f9;">
+                                            <td style="padding: 8px; border: 1px solid #ccc;"><span t-field="log.created_by.name"/></td>
+                                            <td style="padding: 8px; border: 1px solid #ccc;"><span t-field="log.date"/></td>
+                                            <td style="padding: 8px; border: 1px solid #ccc;"><span t-field="log.description"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="patient_report" model="ir.actions.report">
+        <field name="name">Patient Report</field>
+        <field name="model">hms.patient</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hms.patient_report_template</field>
+        <field name="report_file">hms.patient_report_template</field>
+    </record>
+</odoo>
+
